@@ -23,3 +23,13 @@ Menurut saya, URL `amqp://guest:guest@localhost:5672` yang sama pada publisher d
 Saya menjalankan RabbitMQ menggunakan Docker dengan image `rabbitmq:3.13-management`, lalu membuka management UI melalui `http://localhost:15672` dan login menggunakan username `guest` serta password `guest`. Screenshot berikut menunjukkan RabbitMQ sudah berjalan sebagai message broker di komputer lokal saya.
 
 ![RabbitMQ running as message broker](tutorial8/publisher/images/rabbitmq-running.png)
+
+# Sending and Processing Event
+
+Saya menjalankan subscriber terlebih dahulu agar program siap menerima event dari message broker. Setelah itu saya menjalankan publisher, dan publisher mengirim lima event `UserCreatedEventMessage` ke RabbitMQ. Event tersebut kemudian diterima dan diproses oleh subscriber, terlihat dari terminal subscriber yang menampilkan lima pesan masuk dengan `user_id` dan `user_name` berbeda.
+
+![Publisher and subscriber terminal output](tutorial8/publisher/images/publisher-subscriber.png)
+
+Pada dashboard RabbitMQ, terlihat ada koneksi, channel, queue, dan consumer yang aktif ketika subscriber dan publisher berkomunikasi melalui message broker. Hal ini menunjukkan bahwa RabbitMQ berhasil menjadi perantara antara publisher yang mengirim event dan subscriber yang menerima event.
+
+![RabbitMQ while sending and processing event](tutorial8/publisher/images/rabbitmq-running-event.png)
