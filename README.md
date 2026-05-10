@@ -33,3 +33,9 @@ Saya menjalankan subscriber terlebih dahulu agar program siap menerima event dar
 Pada dashboard RabbitMQ, terlihat ada koneksi, channel, queue, dan consumer yang aktif ketika subscriber dan publisher berkomunikasi melalui message broker. Hal ini menunjukkan bahwa RabbitMQ berhasil menjadi perantara antara publisher yang mengirim event dan subscriber yang menerima event.
 
 ![RabbitMQ while sending and processing event](tutorial8/publisher/images/rabbitmq-running-event.png)
+
+# Monitoring Chart Based on Publisher
+
+Saya menjalankan publisher beberapa kali ketika subscriber masih aktif, sehingga setiap eksekusi publisher mengirim lima event baru ke RabbitMQ. Pada dashboard RabbitMQ, aktivitas pengiriman dan pemrosesan event tersebut terlihat sebagai spike pada grafik `Message rates`, karena ada kenaikan singkat ketika message broker menerima pesan dari publisher dan mengirimkannya ke subscriber.
+
+![RabbitMQ message rate spikes after running publisher repeatedly](tutorial8/publisher/images/rabbitmq-running-with2spikes.png)
