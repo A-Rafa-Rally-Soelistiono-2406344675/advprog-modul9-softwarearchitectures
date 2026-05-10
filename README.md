@@ -17,3 +17,9 @@ Menurut saya, program publisher saya akan mengirim lima data atau lima pesan ke 
 The url of: `amqp://guest:guest@localhost:5672` is the same as in the subscriber program, what does it mean?
 
 Menurut saya, URL `amqp://guest:guest@localhost:5672` yang sama pada publisher dan subscriber berarti kedua program tersebut terhubung ke message broker yang sama, yaitu RabbitMQ di komputer lokal saya. Publisher memakai URL ini untuk mengirim pesan ke broker, sedangkan subscriber memakai URL yang sama untuk mendengarkan dan menerima pesan dari broker tersebut, sehingga keduanya dapat berkomunikasi melalui queue yang sama.
+
+# Running RabbitMQ as Message Broker
+
+Saya menjalankan RabbitMQ menggunakan Docker dengan image `rabbitmq:3.13-management`, lalu membuka management UI melalui `http://localhost:15672` dan login menggunakan username `guest` serta password `guest`. Screenshot berikut menunjukkan RabbitMQ sudah berjalan sebagai message broker di komputer lokal saya.
+
+![RabbitMQ running as message broker](tutorial8/publisher/images/rabbitmq-running.png)
