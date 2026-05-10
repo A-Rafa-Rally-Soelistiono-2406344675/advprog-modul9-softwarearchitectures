@@ -7,3 +7,13 @@ Menurut saya, AMQP atau Advanced Message Queuing Protocol adalah protokol komuni
 What does it mean? `guest:guest@localhost:5672`, what is the first `guest`, what is the second `guest`, and what is `localhost:5672` for?
 
 Menurut saya, bagian `guest:guest@localhost:5672` adalah informasi koneksi yang dipakai aplikasi untuk terhubung ke RabbitMQ. `guest` yang pertama adalah username untuk login ke RabbitMQ, sedangkan `guest` yang kedua adalah password dari username tersebut. `localhost:5672` berarti aplikasi saya mencoba terhubung ke RabbitMQ yang berjalan di komputer lokal saya sendiri, dengan port `5672` sebagai port default yang digunakan oleh AMQP untuk komunikasi dengan message broker.
+
+# Understanding Publisher and Message Broker
+
+How much data your publisher program will send to the message broker in one run?
+
+Menurut saya, program publisher saya akan mengirim lima data atau lima pesan ke message broker dalam satu kali run. Hal ini terlihat dari lima pemanggilan `publish_event` di dalam fungsi `main`, dengan masing-masing pesan berisi `user_id` dan `user_name` yang berbeda, yaitu data untuk Amir, Budi, Cica, Dira, dan Emir.
+
+The url of: `amqp://guest:guest@localhost:5672` is the same as in the subscriber program, what does it mean?
+
+Menurut saya, URL `amqp://guest:guest@localhost:5672` yang sama pada publisher dan subscriber berarti kedua program tersebut terhubung ke message broker yang sama, yaitu RabbitMQ di komputer lokal saya. Publisher memakai URL ini untuk mengirim pesan ke broker, sedangkan subscriber memakai URL yang sama untuk mendengarkan dan menerima pesan dari broker tersebut, sehingga keduanya dapat berkomunikasi melalui queue yang sama.
