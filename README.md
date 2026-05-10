@@ -36,6 +36,6 @@ Pada dashboard RabbitMQ, terlihat ada koneksi, channel, queue, dan consumer yang
 
 # Monitoring Chart Based on Publisher
 
-Saya menjalankan publisher beberapa kali ketika subscriber masih aktif, sehingga setiap eksekusi publisher mengirim lima event baru ke RabbitMQ. Pada dashboard RabbitMQ, aktivitas pengiriman dan pemrosesan event tersebut terlihat sebagai spike pada grafik `Message rates`, karena ada kenaikan singkat ketika message broker menerima pesan dari publisher dan mengirimkannya ke subscriber.
+Menurut saya, spike pada grafik `Message rates` muncul karena setiap kali saya menjalankan `cargo run` pada publisher, program langsung memanggil `publish_event` sebanyak lima kali dan mengirim lima pesan ke RabbitMQ. RabbitMQ mencatat aktivitas masuknya pesan tersebut sebagai kenaikan rate publish, lalu karena subscriber sedang aktif, broker juga langsung mengirim pesan-pesan itu ke subscriber sehingga rate deliver/consumer ack ikut naik. Kenaikan ini hanya terjadi sebentar karena jumlah pesannya kecil dan publisher selesai dengan cepat, maka bentuknya terlihat seperti spike pendek pada chart. Ketika saya menjalankan publisher lebih dari satu kali, spike muncul lebih dari sekali sesuai waktu tiap eksekusi publisher.
 
 ![RabbitMQ message rate spikes after running publisher repeatedly](tutorial8/publisher/images/rabbitmq-running-with2spikes.png)
