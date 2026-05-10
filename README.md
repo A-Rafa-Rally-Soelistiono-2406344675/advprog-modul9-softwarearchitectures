@@ -44,6 +44,18 @@ Menurut saya, spike pada grafik `Message rates` muncul karena setiap kali saya m
 
 Saya mensimulasikan slow subscriber dengan mengaktifkan `thread::sleep(ten_millis);` pada handler subscriber, sehingga setiap message diproses dengan tambahan delay sekitar satu detik. Ketika publisher dijalankan beberapa kali dengan cepat, publisher tetap dapat mengirim message ke RabbitMQ lebih cepat daripada subscriber memprosesnya. Akibatnya, message yang belum sempat diproses akan menumpuk sementara di queue dan terlihat sebagai spike pada grafik `Queued messages` serta `Message rates`.
 
-Pada screenshot saya, nilai `Queued messages` sempat naik sebagai spike, tetapi saat screenshot diambil nilai `Ready`, `Unacked`, dan `Total` sudah kembali menjadi `0` karena subscriber sudah selesai memproses message yang menumpuk. Jika publisher dijalankan lebih banyak kali dalam waktu sangat singkat, angka total queued messages bisa lebih tinggi, misalnya `20`, karena satu kali run publisher mengirim lima message; empat kali run cepat dapat menghasilkan sekitar dua puluh message yang menunggu apabila subscriber belum sempat memprosesnya. Jadi jumlah queued messages bergantung pada selisih antara kecepatan publisher mengirim event dan kecepatan subscriber memproses event.
+Pada screenshot saya, nilai `Queued messages` sempat naik sebagai spike, tetapi saat screenshot diambil nilai `Ready`, `Unacked`, dan `Total` sudah kembali menjadi `0` karena subscriber sudah selesai memproses message yang menumpuk. Jika publisher dijalankan lebih banyak kali dalam waktu sangat singkat, angka total queued messages bisa lebih tinggi, karena satu kali run publisher mengirim lima message. Jadi jumlah queued messages bergantung pada selisih antara kecepatan publisher mengirim event dan kecepatan subscriber memproses event.
 
 ![RabbitMQ queued messages with slow subscriber](tutorial8/publisher/images/simulation-slow-subscriber.png)
+
+# Reflection and Running at Least Three Subscribers
+
+Saya menjalankan tiga subscriber secara bersamaan, lalu menjalankan publisher beberapa kali dengan cepat. Dari terminal terlihat bahwa pesan tidak hanya diproses oleh satu subscriber, tetapi terbagi ke beberapa subscriber yang sedang mendengarkan queue yang sama. Hal ini terjadi karena RabbitMQ mendistribusikan message dari queue ke consumer yang tersedia, sehingga beberapa subscriber dapat membantu memproses beban message secara paralel.
+
+![Three subscribers processing messages](tutorial8/publisher/images/three-subscribers-terminal.png)
+
+Pada dashboard RabbitMQ, terlihat jumlah `Connections`, `Channels`, dan `Consumers` menjadi `3`, sesuai dengan tiga subscriber yang saya jalankan. Spike pada grafik `Queued messages` dan `Message rates` juga terlihat turun lebih cepat dibanding saat hanya memakai satu slow subscriber, karena message yang masuk tidak menunggu satu consumer saja, tetapi diproses oleh beberapa subscriber sekaligus.
+
+![RabbitMQ with three subscribers](tutorial8/publisher/images/three-subscribers.png)
+
+Menurut saya, hal yang bisa diperbaiki dari kode publisher dan subscriber adalah error handling. Saat ini beberapa hasil fungsi seperti `listen` dan `publish_event` diabaikan dengan `_ = ...`, padahal akan lebih baik jika error ditangani atau minimal dicetak supaya masalah koneksi RabbitMQ lebih mudah dilacak. Selain itu, subscriber masih menggunakan `loop {}` kosong agar program tetap hidup; pendekatan ini kurang efisien karena membuat program terus berjalan tanpa blocking mechanism yang jelas. Kode juga bisa dibuat lebih mudah dikonfigurasi dengan memindahkan URL RabbitMQ ke environment variable, sehingga alamat broker tidak perlu ditulis langsung di source code.
